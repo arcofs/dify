@@ -192,6 +192,7 @@ services:
       - ./volumes/app/storage:/app/api/storage
     networks:
       - default
+      - dify-network
 
   # worker service
   # The Celery worker for processing the queue.
@@ -211,6 +212,7 @@ services:
       - ./volumes/app/storage:/app/api/storage
     networks:
       - default
+      - dify-network
 
   # Frontend web application.
   web:
@@ -220,6 +222,8 @@ services:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
+    networks:
+      - dify-network
 
   # The postgres database.
   db:
@@ -237,6 +241,9 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+    networks:
+      - dify-network
+      - default
 
   # The redis cache.
   redis:
@@ -300,6 +307,8 @@ services:
     ports:
       - "${EXPOSE_NGINX_PORT:-80}:${NGINX_PORT:-80}"
       - "${EXPOSE_NGINX_SSL_PORT:-443}:${NGINX_SSL_PORT:-443}"
+      networks:
+      - dify-network
 
   # The Weaviate vector store.
   weaviate:
@@ -533,6 +542,8 @@ networks:
   opensearch-net:
     driver: bridge
     internal: true
+  dify-network:
+    driver: bridge
 
 volumes:
   oradata:
